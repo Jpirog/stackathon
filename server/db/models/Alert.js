@@ -40,6 +40,12 @@ const Alert = db.define('alert',{
     required: false,
     unique: false,
   },
+  sentiment: {
+    type: JSON,
+    allowNull: true,
+    required: false,
+    unique: false,
+  },
 }, {
   indexes: [
       {
