@@ -7,9 +7,7 @@ import Routes from "./Routes";
 const App = () => {
   return (
     <div>
-    Hello
       <Routes />
-      World!
     </div>
   );
 };

@@ -9,7 +9,7 @@ const deepai = require('deepai')
 // get new alerts from Twitter and store in the database
 //--------------------------------------------------------------
 
-const getTwitterUpdates = async () => {
+export const getTwitterUpdates = async () => {
   const twitterClient = new TwitterApi({
     appKey: process.env.TWITTER_APP_KEY,
     appSecret: process.env.TWITTER_APP_SECRET,
@@ -48,7 +48,7 @@ const getTwitterUpdates = async () => {
 // check new alerts for appropriateness
 //--------------------------------------------------------------
 
-const checkAppropriateness = async (Alert, textIn) => {
+export const checkAppropriateness = async (Alert, textIn) => {
   console.log('CALLING SITEENGINE on', textIn);
   const data = new FormData();
   data.append('text', textIn);
@@ -72,7 +72,7 @@ const checkAppropriateness = async (Alert, textIn) => {
   }
 }
 
-const checkSentiment = async (Alert, textIn) => {
+export const checkSentiment = async (Alert, textIn) => {
   deepai.setApiKey(process.env.DEEPAI_API_KEY);
   const resp = await deepai.callStandardApi("sentiment-analysis", {
     text: textIn,
@@ -84,4 +84,5 @@ const checkSentiment = async (Alert, textIn) => {
 
 
 // set Twitter retrieval integration to run every 10 minutes
-setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)
+//setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)
+//export default getTwitterUpdates;

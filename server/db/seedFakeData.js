@@ -7,7 +7,13 @@ const seedFakeData = async (nbrUsers = 5, nbrAlerts = 25) => {
   await db.sync({force: true});
 
   const userUsernames = [];
-  const user = await User.create({name: "jpirog@hotmail.com", description: 'John Pirog'})
+  const user = await User.create({
+    email: "jpirog@hotmail.com", 
+    name: 'John Pirog',
+    username: 'johnpirog262',
+    mobilePhone: '8475140345',
+    subscribed: true
+  })
 
 }
 

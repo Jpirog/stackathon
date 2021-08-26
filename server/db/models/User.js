@@ -4,7 +4,8 @@ const {
   INTEGER,
   DATE,
   UUID, 
-  UUIDV4
+  UUIDV4,
+  BOOLEAN
 } = require('sequelize');
 const db = require('../db')
 
@@ -13,14 +14,32 @@ const User = db.define('user',{
     type: STRING,
     required: true,
     allowNull: false,
+    unique: false
+  },
+  email: {
+    type: STRING,
+    required: true,
+    allowNull: false,
     unique: true
   },
-  description: {
-    type: STRING(1000),
+  username: {
+    type: STRING,
+    required: true,
+    allowNull: false,
+    unique: true
+  },
+  mobilePhone: {
+    type: STRING,
+    allowNull: true,
+    required: false,
+    unique: true,
+  },
+  subscribed: {
+    type: BOOLEAN,
     allowNull: false,
     required: true,
     unique: false,
-    validate: { notEmpty: true },
+    defaultValue: false
   },
 })
 

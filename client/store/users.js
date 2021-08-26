@@ -7,10 +7,10 @@ const GET_USER = 'GET_USER';
  
 //ACTION CREATORS
 
-const _getUser = (users) => {
+const _getUser = (user) => {
     return {
         type: GET_USER, 
-        users
+        user
     };
 };
 
@@ -24,10 +24,10 @@ const _getUsers = (users) => {
 
 //THUNK CREATORS
 
-export const getUser = (id) => {
+export const getUser = (email) => {
     return async (dispatch) => {
-        const { data: users } = await axios.get(`/api/users/${id}`);
-        dispatch(_getUser(users));
+      const { data: user } = await axios.get(`/api/users/${email}`);
+      dispatch(_getUser(user));
     };
 };
 
@@ -38,14 +38,15 @@ export const getUsers = () => {
         /*history.push('/users') Wherever we want to redirect!*/
     };
 };
+
 //REDUCER
 
-export const usersReducer = (state = [], action) => {
+export const usersReducer = (state = {}, action) => {
     switch (action.type) {
         case GET_USER:
-            return action.users;
+            return {...state, user: action.user};
         case GET_USERS:
-            return action.users;
+            return {...state, users: action.users};
         default:
             return state
     };

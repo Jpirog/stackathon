@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import Home from "./components/Home";
+import SendAlert from './components/SendAlert';
+import ShowAlerts from './components/ShowAlerts';
 
 /**
  * COMPONENT
@@ -18,6 +20,8 @@ class Routes extends Component {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/home" component={Home} />
+          <Route path="/sendalert" component={ SendAlert } />
+          <Route path="/showalerts" component={ ShowAlerts } />
         </Switch>
       </div>
     );

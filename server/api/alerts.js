@@ -1,44 +1,35 @@
 const router = require('express').Router()
 module.exports = router
-//const { models: { Product, Country } } = require('../db')
+const { Alert } = require('../db')
+const { checkAppropriateness } = require('../integrations');
+const { checkSentiment } = require('../integrations');
 
-// router.get('/', async (req, res, next) => {
-//   try {
-//     const users = await Product.findAll({
-//       //attributes: ['id', 'name', 'price', 'inventory'],
-//       include: [Country]
-//     })
-//     res.json(users)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
+router.get('/', async (req, res, next) => {
+  try {
+    const count = await Alert.count();
+    const { trainLine, limit, offset } = req.query;
+    const alerts = await Alert.findAll({
+      order: [ ['timeReceived', 'DESC'] ],
+      offset: offset,
+      limit: limit,
+    })
+    res.send({ count: count, alerts: alerts }); 
+  } catch (err) {
+    next(err)
+  }
+})
 
-// router.get('/coffee/:id', async (req, res, next) => {
-//   try {
-//     const coffee = await Product.findByPk(req.params.id)
-//     res.send(coffee)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
-// router.post('/:id', async (req, res, next) => {
-//   try {
-//     const product = await Product.update(req.body, { where: { id: req.body.id } });
-//     res.send(product);
-//   } catch (err) {
-//     next(err);
-//   }
-// })
+router.post('/', async (req, res, next) => {
+  try {
+    const alert = await Alert.create(req.body, {returning: true});
+//    await checkAppropriateness (alert, alert.description); // commented out to save API calls for trial account
+    await checkSentiment(alert, alert.description);
+    res.send(alert);
+  } catch (err) {
+    next(err);
+  }
+})
 
-// router.put('/:id', async (req, res, next) => {
-//   const id = req.params.id;
-//   try {
-//     const product = await Product.update(req.body, { where: { id: id }});
-//     res.sendStatus(201);
-//   }
-//   catch (err){
-//     next(err);
-//   }
-
-// })
+router.post('/checks', async (req, res, next) => {
+  
+})

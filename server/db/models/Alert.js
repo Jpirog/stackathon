@@ -4,7 +4,8 @@ const {
   INTEGER,
   DATE,
   JSON, 
-  UUIDV4
+  UUID,
+  UUIDV4,
 } = require('sequelize');
 const db = require('../db')
 
@@ -20,6 +21,12 @@ const Alert = db.define('alert',{
     required: false,
     allowNull: true,
     unique: false,
+  },
+  seq: {
+    type: UUID,
+    defaultValue: UUIDV4,
+    required: true,
+    allowNull: false,
   },
   timeReceived: {
     type: DATE,
@@ -50,7 +57,7 @@ const Alert = db.define('alert',{
   indexes: [
       {
           unique: true,
-          fields: ['source', 'sourceId'],
+          fields: ['source', 'sourceId', 'seq'],
       }
   ]
 }
