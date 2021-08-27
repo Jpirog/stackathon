@@ -46,7 +46,7 @@ export const addAlert = (alert) => {
 
     return async (dispatch) => {
         const { data: newAlert } = await axios.post('/api/alerts', alert);
-        dispatch(_addAlert(newAlert)); // was get
+        dispatch(_addAlert(newAlert));
     };
 };
 

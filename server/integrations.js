@@ -23,7 +23,7 @@ export const getTwitterUpdates = async () => {
   user =  await (await roClient.v2.userByUsername('metraUPNW'));
   const tweets = await twitterClient.v2.userTimeline(user.data.id, { 'max_results': 5,  'tweet.fields': 'author_id,id,text,created_at', expansions:'author_id', 'user.fields':'name' })
   
-  for (let i=0; i < 1; i++){  // just process one tweet
+  for (let i=0; i < 1 ; i++){  // just process one tweet
 //  for (let i=0; i < tweets.data.data.length; i++){
     const c = tweets.data.data[i];
     try{
@@ -34,9 +34,9 @@ export const getTwitterUpdates = async () => {
         description: c.text
       })
       console.log(`new Twitter alert received - id: ${c.id}, created at ${c.created_at} with text of: ${c.text}`);
-//      await checkAppropriateness(newAlert, c.text);
+      await checkAppropriateness(newAlert, c.text);
       await checkSentiment(newAlert, c.text);
-//      await sendText(newAlert, c.text);
+      await sendText(newAlert, c.text);
     }
     catch(err){
       // ignore duplicate key errors - the alert has already been received
@@ -57,6 +57,7 @@ export const checkAppropriateness = async (Alert, textIn) => {
   data.append('mode', 'standard');
   data.append('api_user', process.env.SIGHTENGINE_API_USER)
   data.append('api_secret', process.env.SIGHTENGINE_API_SECRET)
+  let res;
   try{
     const resp = await axios({
       url: 'https://api.sightengine.com/1.0/text/check.json',
@@ -67,10 +68,12 @@ export const checkAppropriateness = async (Alert, textIn) => {
     console.log('SIGHTENGINE', resp.data)
     Alert.appropriateness = resp.data;
     await Alert.save();
+    res = resp.data;
   }
   catch(err){
     console.log('SIGHTENGINE ERROR', err)
   }
+  return res;
 }
 
 export const checkSentiment = async (Alert, textIn) => {
@@ -84,27 +87,37 @@ export const checkSentiment = async (Alert, textIn) => {
 }
 
 export const sendText = async (Alert, textIn) => {
+  if (!Alert.sentiment.output.includes('Negative')){
+    Alert.textStatus = 'Not sent, not negative';
+    await Alert.save();
+  }
   const vonage = new Vonage({
     apiKey: process.env.VONAGE_API_KEY,
     apiSecret: process.env.VONAGE_API_SECRET,
   })
   let vonageMsg = 'No update';
-  await vonage.message.sendSms(process.env.VONAGE_FROM_PHONE, '18475140345', textIn, (err, response) => {
+  await vonage.message.sendSms(process.env.VONAGE_FROM_PHONE, '18475140345', textIn, async (err, response) => {
     if (err){
       vonageMsg = 'Error calling vonage';
       console.log('ERROR CALLING VONAGE', err);
+      Alert.textStatus = vonageMsg;
+      await Alert.save();
     } else {
       if(response.messages[0]['status'] === "0") {
         vonageMsg = 'Message sent successfully';
         console.log("Message sent successfully.");
-    } else {
+        Alert.textStatus = vonageMsg;
+        await Alert.save();
+      } else {
         vonageMsg = `Message failed - ${response.messages[0]['error-text']}`;
         console.log(`Message failed with error: ${response.messages[0]['error-text']}`);
-      }
+        Alert.textStatus = vonageMsg;
+        await Alert.save();
+        }
     }
   })
-  Alert.textStatus = vonageMsg;
-  await Alert.save();
+  // Alert.textStatus = vonageMsg; // not working as the above function doesn't wait
+  // await Alert.save();
 }
 
 // set Twitter retrieval integration to run every 10 minutes

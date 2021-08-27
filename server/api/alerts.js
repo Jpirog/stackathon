@@ -1,8 +1,7 @@
 const router = require('express').Router()
 module.exports = router
 const { Alert } = require('../db')
-const { checkAppropriateness } = require('../integrations');
-const { checkSentiment } = require('../integrations');
+const { checkAppropriateness, checkSentiment, sendText } = require('../integrations');
 
 router.get('/', async (req, res, next) => {
   try {
@@ -22,8 +21,14 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const alert = await Alert.create(req.body, {returning: true});
-//    await checkAppropriateness (alert, alert.description); // commented out to save API calls for trial account
-    await checkSentiment(alert, alert.description);
+    const approp = await checkAppropriateness (alert, alert.description); // commented out to save API calls for trial account
+    if (approp.profanity.matches.length === 0 && approp.personal.matches.length === 0 && approp.link.matches.length === 0){
+      await checkSentiment(alert, alert.description);
+      await sendText(alert, alert.description);
+    } 
+    else{
+      console.log('Not sent due to NSFW language - ', alert.description)
+    }
     res.send(alert);
   } catch (err) {
     next(err);

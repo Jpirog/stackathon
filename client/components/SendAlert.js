@@ -65,7 +65,7 @@ class SendAlert extends React.Component {
         <li>The train line and current time will be sent along with your message to subscribers</li>
       </ul>
 
-      <form onSubmit={this.handleSubmit}>
+      <form id="subalert" onSubmit={this.handleSubmit}>
         <label>Train line:</label>
         <select name="trainline" onChange={this.handleChange}>
           <option value="upnw"> Metra UP - Northwest</option>

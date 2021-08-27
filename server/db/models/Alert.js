@@ -46,12 +46,14 @@ const Alert = db.define('alert',{
     allowNull: true,
     required: false,
     unique: false,
+    defaultValue: {"status":"success","request":{"id":"req_aguyacBY3cHDGR0cWCgmI","timestamp":1630029525.10108,"operations":1},"profanity":{"matches":[]},"personal":{"matches":[]},"link":{"matches":[]}},
   },
   sentiment: {
     type: JSON,
     allowNull: true,
     required: false,
     unique: false,
+    defaultValue: {"id":"08564b41-9b38-4a4a-9b80-3cb4d7d52553","output":["Neutral"]},
   },
   textStatus: {
     type: STRING,
