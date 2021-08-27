@@ -3,7 +3,8 @@ import TwitterApi from 'twitter-api-v2';
 const Alert = require('./db/models/Alert');
 const axios = require('axios');
 const FormData = require('form-data');
-const deepai = require('deepai')
+const deepai = require('deepai');
+const Vonage = require('@vonage/server-sdk');
 
 //--------------------------------------------------------------
 // get new alerts from Twitter and store in the database
@@ -19,7 +20,6 @@ export const getTwitterUpdates = async () => {
   const roClient = twitterClient.readOnly;
 
   let user;
-  
   user =  await (await roClient.v2.userByUsername('metraUPNW'));
   const tweets = await twitterClient.v2.userTimeline(user.data.id, { 'max_results': 5,  'tweet.fields': 'author_id,id,text,created_at', expansions:'author_id', 'user.fields':'name' })
   
@@ -34,12 +34,13 @@ export const getTwitterUpdates = async () => {
         description: c.text
       })
       console.log(`new Twitter alert received - id: ${c.id}, created at ${c.created_at} with text of: ${c.text}`);
-      await checkAppropriateness(newAlert, c.text);
+//      await checkAppropriateness(newAlert, c.text);
       await checkSentiment(newAlert, c.text);
+//      await sendText(newAlert, c.text);
     }
     catch(err){
       // ignore duplicate key errors - the alert has already been received
-      //console.log('**********', err);
+      console.log('**********', err);
     }
   }
 }
@@ -82,6 +83,29 @@ export const checkSentiment = async (Alert, textIn) => {
   await Alert.save();
 }
 
+export const sendText = async (Alert, textIn) => {
+  const vonage = new Vonage({
+    apiKey: process.env.VONAGE_API_KEY,
+    apiSecret: process.env.VONAGE_API_SECRET,
+  })
+  let vonageMsg = 'No update';
+  await vonage.message.sendSms(process.env.VONAGE_FROM_PHONE, '18475140345', textIn, (err, response) => {
+    if (err){
+      vonageMsg = 'Error calling vonage';
+      console.log('ERROR CALLING VONAGE', err);
+    } else {
+      if(response.messages[0]['status'] === "0") {
+        vonageMsg = 'Message sent successfully';
+        console.log("Message sent successfully.");
+    } else {
+        vonageMsg = `Message failed - ${response.messages[0]['error-text']}`;
+        console.log(`Message failed with error: ${response.messages[0]['error-text']}`);
+      }
+    }
+  })
+  Alert.textStatus = vonageMsg;
+  await Alert.save();
+}
 
 // set Twitter retrieval integration to run every 10 minutes
 //setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)

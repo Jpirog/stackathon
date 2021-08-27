@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+const socket = new WebSocket(window.document.location.origin.replace('http','ws'));
+
+socket.addEventListener('message', (ev) => {
+  console.log(' ====> received message from server',JSON.parse(ev.data))
+  alert(`NEW ISSUE REPORTED: ${JSON.parse(ev.data)}`)
+  const newItem = JSON.parse(ev.data);
+//  store.dispatch(_createTodo(newItem))
+})
+
 //ACTION TYPES
  
 const GET_ALERTS = 'GET_ALERTS';
@@ -33,6 +42,8 @@ const _addAlert = (alert) => {
 //THUNK CREATORS
 
 export const addAlert = (alert) => {
+    socket.send(JSON.stringify(alert.description));
+
     return async (dispatch) => {
         const { data: newAlert } = await axios.post('/api/alerts', alert);
         dispatch(_addAlert(newAlert)); // was get

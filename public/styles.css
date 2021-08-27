@@ -26,3 +26,45 @@
   color: rgb(198, 197, 202);
   border: 1px solid rgb(198, 197, 202);
 }
+
+#loginimg, #menuimg{
+  position: relative;
+}
+#loginform, #menuform{
+    position: absolute; 
+    top: 400px; 
+    left: 0; 
+    width: 35%; 
+    margin-left: 50px;
+    border: 1px solid black;
+    border-radius: 25px;
+    font-size: 26px;
+    background-color: antiquewhite;
+}
+#loginform label{
+  margin-left: 8px;
+}
+#loginform input{
+  margin-left: 8px;
+  width: 250px;
+}
+#loginform button{
+  margin-left: 28px;
+  margin-bottom: 15px;
+}
+#logintitle, #menutitle{
+  position: absolute; 
+  top: 50px; 
+  left: 70%; 
+  width: 25%; 
+  /* margin-left: 50px; */
+  font-size: 95px;
+  color: red;
+}
+#loginhead, #menuhead{
+  text-align: center;
+  font-size: 32px;
+}
+ol{
+  list-style-type: none;
+}

@@ -53,6 +53,12 @@ const Alert = db.define('alert',{
     required: false,
     unique: false,
   },
+  textStatus: {
+    type: STRING,
+    allowNull: true,
+    required: false,
+    unique: false,
+  },
 }, {
   indexes: [
       {

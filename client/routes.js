@@ -4,6 +4,7 @@ import { withRouter, Route, Switch, Redirect } from "react-router-dom";
 import Home from "./components/Home";
 import SendAlert from './components/SendAlert';
 import ShowAlerts from './components/ShowAlerts';
+import Login from './components/Login';
 
 /**
  * COMPONENT
@@ -18,8 +19,8 @@ class Routes extends Component {
     return (
       <div>
         <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/home" component={Home} />
+          <Route path="/" exact component={ Login } />
+          <Route path="/home" component={ Home } />
           <Route path="/sendalert" component={ SendAlert } />
           <Route path="/showalerts" component={ ShowAlerts } />
         </Switch>

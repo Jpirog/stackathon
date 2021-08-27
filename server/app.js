@@ -15,6 +15,7 @@ app.use(express.json())
 app.use('/api', require('./api'))
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, '..', 'public/index.html')));
+
 // static file-serving middleware
 app.use(express.static(path.join(__dirname, '..', 'public')))
 
@@ -44,3 +45,4 @@ app.use((err, req, res, next) => {
 
 // set up twitter polling
 //setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)
+getTwitterUpdates(); // process one time only
