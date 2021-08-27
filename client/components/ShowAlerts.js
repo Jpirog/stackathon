@@ -5,6 +5,7 @@ import { getUser } from '../store/users';
 import { getAlerts } from '../store/alerts';
 import dateFormat from 'dateformat';
 import ReactPaginate from "react-paginate";
+import { Toaster } from 'react-hot-toast';
 
 class ShowAlerts extends React.Component {
   constructor(props) {
@@ -32,54 +33,55 @@ class ShowAlerts extends React.Component {
       return (<h1>Loading alerts...</h1>)
     }
 
-    // const eventTime = Date.now();
-    // const dateFmt = dateFormat(eventTime, "ddd, mmm d, yyyy");
     return (
       <div>
-        <h1 id="showalerts">Recent Alerts</h1>
-        <hr />
-        <ReactPaginate
-          previousLabel={"← Previous"}
-          nextLabel={"Next →"}
-          pageCount={Math.ceil(this.props.alertsCount / this.state.alertsPerPage)}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick}
-          containerClassName={"pagination"}
-          previousLinkClassName={"pagination__link"}
-          nextLinkClassName={"pagination__link"}
-          disabledClassName={"pagination__link--disabled"}
-          activeClassName={"pagination__link--active"}
-        />
-        <hr />
-        <table>
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Date/Time</th>
-              <th>Description</th>
-              <th>Appropriateness</th>
-              <th>Sentiment</th>
-              <th>Text Status</th>
-            </tr>
-            {this.props.alerts.map(c => {
-              const {request, ...newApprop} = c.appropriateness;
-              const {id, ...newSent} = c.sentiment;
-              return (
-              <tr key={c.id}>
-                <td>{ c.source }</td>
-                <td>{ dateFormat(c.timeReceived,'ddd, mmm d, yyyy, h:MM:ss TT')} </td>
-                <td>{ c.description }</td>
-                <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newApprop, null, 2 ) }</td>
-                <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newSent, null, 2 ) }</td>
-                <td>{ c.textStatus }</td>
+        <img id="loginimg" src="https://wgntv.com/wp-content/uploads/sites/5/2017/05/metra.jpeg?strip=1" />
+        <Toaster />
+        <div id="alertsbox">
+          <h1 id="showalerts">Recent Alerts on #ALERT</h1>
+          <hr />
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            pageCount={Math.ceil(this.props.alertsCount / this.state.alertsPerPage)}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={"pagination"}
+            previousLinkClassName={"pagination__link"}
+            nextLinkClassName={"pagination__link"}
+            disabledClassName={"pagination__link--disabled"}
+            activeClassName={"pagination__link--active"}
+          />
+          <hr />
+          <table>
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Date/Time</th>
+                <th>Description</th>
+                <th>Appropriateness</th>
+                <th>Sentiment</th>
+                <th>Text Status</th>
               </tr>
-              )
-            }
-              )
-            }
-          </thead>
-        </table>
+              {this.props.alerts.map(c => {
+                const {request, ...newApprop} = c.appropriateness;
+                const {id, ...newSent} = c.sentiment;
+                return (
+                  <tr key={c.id}>
+                    <td>{ c.source }</td>
+                    <td>{ dateFormat(c.timeReceived,'ddd, mmm d, yyyy, h:MM:ss TT')} </td>
+                    <td>{ c.description }</td>
+                    <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newApprop, null, 2 ) }</td>
+                    <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newSent, null, 2 ) }</td>
+                    <td>{ c.textStatus }</td>
+                  </tr>
+                )
+              })
+              }
+            </thead>
+          </table>
+        </div>
       </div>
     )
   }

@@ -1,6 +1,6 @@
 'use strict'
 
-const {seedDB, db, User, Alert } = require('../server/db')
+const { seedDB, db, User, Alert } = require('../server/db')
 
 async function runSeed() {
   console.log('seeding starting...')

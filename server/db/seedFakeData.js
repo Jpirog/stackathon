@@ -1,4 +1,3 @@
-//const faker = require('faker');
 const User = require('./models/User')
 const Alert = require('./models/Alert')
 const db = require('./db');

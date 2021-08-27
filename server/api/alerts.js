@@ -21,13 +21,15 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const alert = await Alert.create(req.body, {returning: true});
-    const approp = await checkAppropriateness (alert, alert.description); // commented out to save API calls for trial account
+    const approp = await checkAppropriateness (alert, alert.description); // comment out to save API calls on trial account
     if (approp.profanity.matches.length === 0 && approp.personal.matches.length === 0 && approp.link.matches.length === 0){
       await checkSentiment(alert, alert.description);
       await sendText(alert, alert.description);
     } 
     else{
-      console.log('Not sent due to NSFW language - ', alert.description)
+      alert.sentiment = {"id":"Not applicable","output":[]}
+      alert.textStatus = 'Not sent';
+      await alert.save();
     }
     res.send(alert);
   } catch (err) {
@@ -35,6 +37,6 @@ router.post('/', async (req, res, next) => {
   }
 })
 
-router.post('/checks', async (req, res, next) => {
+// router.post('/checks', async (req, res, next) => {
   
-})
+// })

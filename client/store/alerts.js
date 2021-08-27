@@ -4,9 +4,8 @@ const socket = new WebSocket(window.document.location.origin.replace('http','ws'
 
 socket.addEventListener('message', (ev) => {
   console.log(' ====> received message from server',JSON.parse(ev.data))
-  alert(`NEW ISSUE REPORTED: ${JSON.parse(ev.data)}`)
+  alert(`BREAKING: New issue reported: ${JSON.parse(ev.data)}`)
   const newItem = JSON.parse(ev.data);
-//  store.dispatch(_createTodo(newItem))
 })
 
 //ACTION TYPES
@@ -42,10 +41,15 @@ const _addAlert = (alert) => {
 //THUNK CREATORS
 
 export const addAlert = (alert) => {
-    socket.send(JSON.stringify(alert.description));
 
     return async (dispatch) => {
         const { data: newAlert } = await axios.post('/api/alerts', alert);
+        if (newAlert.appropriateness.profanity.matches.length === 0 && 
+            newAlert.appropriateness.personal.matches.length === 0 && 
+            newAlert.appropriateness.link.matches.length === 0){
+                socket.send(JSON.stringify(alert.description));
+        }
+    
         dispatch(_addAlert(newAlert));
     };
 };
@@ -62,10 +66,10 @@ export const getAlerts = (parms) => {
         const { data } = await axios.get('/api/alerts', {params: parms});
         const { alerts } = data;
         const { count } = data;
-        dispatch(_getAlerts({alerts, count})); // was alerts
-        /*history.push('/users') Wherever we want to redirect!*/
+        dispatch(_getAlerts({alerts, count})); 
     };
 };
+
 //REDUCER
 
 export const alertsReducer = (state = [], action) => {

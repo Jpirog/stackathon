@@ -32,7 +32,6 @@ app.use((req, res, next) => {
 
 // sends index.html
 app.use('*', (req, res) => {
-  console.log('****', path.join(__dirname, '..', 'public/index.html'))
   res.sendFile(path.join(__dirname, '..', 'public/index.html'));
 })
 
@@ -44,5 +43,6 @@ app.use((err, req, res, next) => {
 })
 
 // set up twitter polling
-//setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)
-getTwitterUpdates(); // process one time only
+//setInterval(() => getTwitterUpdates(), 5000) // Polls every five seconds
+//setInterval(() => getTwitterUpdates(), 1000*60*10) // Polls every 10 minutes
+//getTwitterUpdates(); // Poll one time only

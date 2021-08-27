@@ -14,7 +14,6 @@ const init = async () => {
     else {
       await db.sync()
     }
-    // start listening (and create a 'server' object representing our server)
     const server = app.listen(PORT, () => console.log(`Listening on port ${PORT}...`))
 
     const socketServer = new ws.Server({ server });
@@ -28,9 +27,9 @@ const init = async () => {
       });
 
       socket.on('message', (msg) => {
-        console.log('received msg from client:', msg)
-//        sockets.forEach(c => c != socket && c.send((msg))) // send msg to other clients
-        sockets.forEach(c => c.send((msg))) // send msg to other clients
+        console.log('received msg from client - broadcasting to all:', msg)
+//        sockets.forEach(c => c != socket && c.send((msg))) // send msg to other clients only
+        sockets.forEach(c => c.send((msg))) // send msg to all clients including the sender
       });
 })
 

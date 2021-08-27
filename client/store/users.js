@@ -35,7 +35,6 @@ export const getUsers = () => {
     return async (dispatch) => {
         const { data: users } = await axios.get('/api/users');
         dispatch(_getUsers(users));
-        /*history.push('/users') Wherever we want to redirect!*/
     };
 };
 

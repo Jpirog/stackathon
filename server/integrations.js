@@ -1,4 +1,3 @@
-//const { db, User } = require('./db')
 import TwitterApi from 'twitter-api-v2';
 const Alert = require('./db/models/Alert');
 const axios = require('axios');
@@ -24,7 +23,7 @@ export const getTwitterUpdates = async () => {
   const tweets = await twitterClient.v2.userTimeline(user.data.id, { 'max_results': 5,  'tweet.fields': 'author_id,id,text,created_at', expansions:'author_id', 'user.fields':'name' })
   
   for (let i=0; i < 1 ; i++){  // just process one tweet
-//  for (let i=0; i < tweets.data.data.length; i++){
+//  for (let i=0; i < tweets.data.data.length; i++){ // process all that were received
     const c = tweets.data.data[i];
     try{
       const newAlert = await Alert.create({
@@ -34,9 +33,15 @@ export const getTwitterUpdates = async () => {
         description: c.text
       })
       console.log(`new Twitter alert received - id: ${c.id}, created at ${c.created_at} with text of: ${c.text}`);
-      await checkAppropriateness(newAlert, c.text);
-      await checkSentiment(newAlert, c.text);
-      await sendText(newAlert, c.text);
+      const approp = await checkAppropriateness(newAlert, c.text); // if not appropriate, do not do sentiment or text sending
+      if (approp.profanity.matches.length === 0 && approp.personal.matches.length === 0 && approp.link.matches.length === 0){
+        await checkSentiment(newAlert, c.text);
+        await sendText(newAlert, c.text);
+        } else {
+          newAlert.sentiment = 'Not checked';
+          newAlert.textStatus = 'Not checked';
+          await newAlert.save();
+        }
     }
     catch(err){
       // ignore duplicate key errors - the alert has already been received
@@ -50,7 +55,6 @@ export const getTwitterUpdates = async () => {
 //--------------------------------------------------------------
 
 export const checkAppropriateness = async (Alert, textIn) => {
-  console.log('CALLING SITEENGINE on', textIn);
   const data = new FormData();
   data.append('text', textIn);
   data.append('lang', 'en');
@@ -65,7 +69,6 @@ export const checkAppropriateness = async (Alert, textIn) => {
       data: data,
       headers: data.getHeaders(),
     })
-    console.log('SIGHTENGINE', resp.data)
     Alert.appropriateness = resp.data;
     await Alert.save();
     res = resp.data;
@@ -81,7 +84,6 @@ export const checkSentiment = async (Alert, textIn) => {
   const resp = await deepai.callStandardApi("sentiment-analysis", {
     text: textIn,
   });
-  console.log('*** sentiment', resp);
   Alert.sentiment = resp;
   await Alert.save();
 }
@@ -116,10 +118,4 @@ export const sendText = async (Alert, textIn) => {
         }
     }
   })
-  // Alert.textStatus = vonageMsg; // not working as the above function doesn't wait
-  // await Alert.save();
 }
-
-// set Twitter retrieval integration to run every 10 minutes
-//setInterval(() => getTwitterUpdates(), 5000) // 1000*60*10)
-//export default getTwitterUpdates;

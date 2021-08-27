@@ -6,12 +6,13 @@ export class Login extends React.Component {
   constructor(props) {
     super(props);
   }
+
   handleSubmit(ev){
     ev.preventDefault();
     this.props.history.push('/home/');
   }
+
   render() {
-    
     return (
       <div>
         <img id="loginimg" src="https://wgntv.com/wp-content/uploads/sites/5/2017/05/metra.jpeg?strip=1" />
@@ -35,12 +36,15 @@ export class Login extends React.Component {
     )
   }
 }
+
 const mapState = (state) => {
   return {
   };
 };
+
 const mapDispatchToProps = (dispatch) => {
   return ({
   })
 };
+
 export default withRouter(connect(mapState, mapDispatchToProps)(Login));
