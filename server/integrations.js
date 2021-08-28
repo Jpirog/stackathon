@@ -20,10 +20,10 @@ export const getTwitterUpdates = async () => {
 
   let user;
   user =  await (await roClient.v2.userByUsername('metraUPNW'));
-  const tweets = await twitterClient.v2.userTimeline(user.data.id, { 'max_results': 5,  'tweet.fields': 'author_id,id,text,created_at', expansions:'author_id', 'user.fields':'name' })
+  const tweets = await twitterClient.v2.userTimeline(user.data.id, { 'max_results': 25,  'tweet.fields': 'author_id,id,text,created_at', expansions:'author_id', 'user.fields':'name' })
   
-  for (let i=0; i < 1 ; i++){  // just process one tweet
-//  for (let i=0; i < tweets.data.data.length; i++){ // process all that were received
+//  for (let i=0; i < 1 ; i++){  // just process one tweet (for testing)
+  for (let i=0; i < tweets.data.data.length; i++){ // process all that were received
     const c = tweets.data.data[i];
     try{
       const newAlert = await Alert.create({

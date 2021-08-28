@@ -20,12 +20,12 @@ export class Login extends React.Component {
         <div id="loginform"><p id="loginhead">Please enter your login credentials</p>
           <form onSubmit={this.handleSubmit} >
             <div className="formfield">
-              <label htmlFor="username">User name</label><br/>
+              <label htmlFor="username">User name:</label><br/>
               <input name="username" type="text" autoFocus/>
             </div>
             <div className="formfield">
-              <label htmlFor="password">Password</label><br/>
-              <input name="password" type="text" />
+              <label htmlFor="password">Password:</label><br/>
+              <input name="password" type="password" />
             </div>
             <Link to="/home/">
               <button name="submit" type="submit">Submit</button>

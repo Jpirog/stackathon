@@ -11,7 +11,7 @@ class ShowAlerts extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      alertsPerPage: 2,
+      alertsPerPage: 5,
       currentPage: 0,
     };
   }
@@ -59,7 +59,7 @@ class ShowAlerts extends React.Component {
               <tr>
                 <th>Source</th>
                 <th>Date/Time</th>
-                <th>Description</th>
+                <th>Alert Description</th>
                 <th>Appropriateness</th>
                 <th>Sentiment</th>
                 <th>Text Status</th>
@@ -72,8 +72,8 @@ class ShowAlerts extends React.Component {
                     <td>{ c.source }</td>
                     <td>{ dateFormat(c.timeReceived,'ddd, mmm d, yyyy, h:MM:ss TT')} </td>
                     <td>{ c.description }</td>
-                    <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newApprop, null, 2 ) }</td>
-                    <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newSent, null, 2 ) }</td>
+                    <td >{ JSON.stringify(newApprop, null, 2 ) }</td>
+                    <td >{ JSON.stringify(newSent, null, 2 ) }</td>
                     <td>{ c.textStatus }</td>
                   </tr>
                 )
@@ -86,6 +86,8 @@ class ShowAlerts extends React.Component {
     )
   }
 }
+// <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newApprop, null, 2 ) }</td>
+// <td style={{whiteSpace: "pre-wrap"}}>{ JSON.stringify(newSent, null, 2 ) }</td>
 
 const mapState = (state) => {
   return {

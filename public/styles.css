@@ -8,7 +8,6 @@
 .pagination a {
   padding: 10px;
   border-radius: 5px;
-  /* border: 1px solid #6c7ac9; */
   border: 1px solid black;
   color:black;
 }
@@ -25,6 +24,10 @@
 .pagination__link--disabled a {
   color: rgb(198, 197, 202);
   border: 1px solid rgb(198, 197, 202);
+}
+
+.pagination .next{
+  margin-right: 40px;
 }
 
 #loginimg, #menuimg{
@@ -45,6 +48,7 @@
 }
 #loginform label{
   margin-left: 8px;
+
 }
 #loginform input{
   margin-left: 8px;
@@ -77,6 +81,10 @@ td, th {
 }
 #showalerts{
   text-align: center;
+  background: darkblue;
+  color: white;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 th{
   background-color: lightblue;
@@ -85,6 +93,7 @@ th{
   margin-right: 18px;
   margin-bottom: 10px;
   line-height: 25px;
+  font-weight: bold;
 }
 #subalert input{
   margin-right: 28px;
@@ -121,4 +130,9 @@ th{
 
 #conduct{
   text-align: left;
+}
+hr{
+  background-color: black;
+  height: 2px;
+  border: none;
 }
